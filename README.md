@@ -1,8 +1,7 @@
-# PSSI Triage Tool
+# COMPASS (Campus Online Matching of Personalized Academic & Student Supports)
 ## Overview
 
-The Post-Secondary Student Stressors Index (PSSI) is a 46-item instrument designed to help post-secondary institutions and researchers with evaluating and surveilling student stress (Linden & Stuart, 2019).
-This project is part of a larger study, *Pilot Launch of the Post-Secondary Student Stressors Index (PSSI) as a Student Wellness Services Tool*, which aims to implement the PSSI in clinical settings during the 2025–2026 academic year. The tool is currently under development.
+COMPASS is a tool designed to facilitate the implementation of the Post-Secondary Student Stressors Index (PSSI), a validated 46-item instrument created to help post-secondary institutions and researchers evaluate and monitor student stress (Linden & Stuart, 2019). This project is part of a larger study, Pilot Launch of the Post-Secondary Student Stressors Index (PSSI) as a Student Wellness Services Tool, which aims to integrate the PSSI into clinical settings during the 2025–2026 academic year. The tool is currently under development
 
 **Live snapshot**: https://sentfromthehub.shinyapps.io/pssi-triage-tool/
 
