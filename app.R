@@ -1,4 +1,3 @@
-
 options(repos = c(CRAN = "https://cloud.r-project.org"))
 #-----
 #PSSI Triage Tool app - June 2025
@@ -125,10 +124,30 @@ domain_colors <- c(
 )
 
 
-ui <- navbarPage("PSSI Student Triage Tool",
+ui <- navbarPage("COMPASS",
                  id = "main_navbar",
                  
-                 tabPanel("Survey",
+                 tabPanel("Home",
+                          fluidRow(
+                            column(12, align = "center",
+                                   br(), br(),
+                                   h1("COMPASS", style = "font-size: 48px; font-weight: bold"),
+                                   h4("CAMPUS ONLINE MATCHING OF PERSONALIZED ACADEMIC & STUDENT SUPPORTS", style = "color: #6c8ebf;"),
+                                   p(em("A navigational tool made \"for-students, by-students\""), style = "font-size: 16px"),
+                                   br(),
+                                   tags$img(src = "https://images.pexels.com/photos/1438072/pexels-photo-1438072.jpeg", 
+                                           width = "600px"),
+                                   br(), br(),
+                                   actionButton("start_assessment", "START ASSESSMENT", 
+                                               class = "btn-primary", 
+                                               style = "font-size: 18px; padding: 12px 40px"),
+                                   br(), br(),
+                                   p("POWERED BY THE LINDEN LAB")
+                            )
+                          )
+                 ),
+                 
+                 tabPanel("Assessment",
                           sidebarLayout(
                             sidebarPanel(
                               helpText(HTML("The PSSI is a tool made <em>for students, by students</em>, designed to assess stressors across five domains. Use the colored tabs to the right to rate each stressor by <strong>severity</strong> using the slider. Leave it unrated if it's not applicable to you!")),
@@ -149,7 +168,7 @@ ui <- navbarPage("PSSI Student Triage Tool",
                           )
                  ),
                  
-                 tabPanel("Results",
+                 tabPanel("Your Profile",
                           fluidRow(
                             column(4,
                                    h4("Stress by Domain"),
@@ -179,6 +198,10 @@ ui <- navbarPage("PSSI Student Triage Tool",
 )
 
 server <- function(input, output, session) {
+  
+  observeEvent(input$start_assessment, {
+    updateNavbarPage(session, inputId = "main_navbar", selected = "Assessment")
+  })
   
   render_domain_ui <- function(domain_name) {
     items <- pssi_items %>% filter(domain == domain_name)
@@ -302,9 +325,8 @@ server <- function(input, output, session) {
   })
   
   observeEvent(input$submit, {
-    updateNavbarPage(session, inputId = "main_navbar", selected = "Results")
+    updateNavbarPage(session, inputId = "main_navbar", selected = "Your Profile")
   })
 }
 
 shinyApp(ui, server)
-
