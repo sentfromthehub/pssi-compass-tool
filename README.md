@@ -18,7 +18,7 @@ To run locally:
     ```
 2.  **Navigate to the project directory**:
     ```bash
-    cd pssi-triage-tool
+    cd pssi-compass-tool
     ```
 3.  **Install the required R packages**. Open R or RStudio and run the following command in the console:
     ```r

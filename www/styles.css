@@ -1,0 +1,30 @@
+/* Custom Coloured Tabs for PSSI Domains */
+.nav-tabs > li > a[data-value='Academic'] { 
+    border-top: 3px solid #E41A1C; 
+    color: #E41A1C; 
+    font-weight: bold; 
+}
+
+.nav-tabs > li > a[data-value='Learning Environment'] { 
+    border-top: 3px solid #377EB8; 
+    color: #377EB8; 
+    font-weight: bold; 
+}
+
+.nav-tabs > li > a[data-value='Campus Culture'] { 
+    border-top: 3px solid #4DAF4A; 
+    color: #4DAF4A; 
+    font-weight: bold; 
+}
+
+.nav-tabs > li > a[data-value='Interpersonal'] { 
+    border-top: 3px solid #984EA3; 
+    color: #984EA3; 
+    font-weight: bold; 
+}
+
+.nav-tabs > li > a[data-value='Personal'] { 
+    border-top: 3px solid #FF7F00; 
+    color: #FF7F00; 
+    font-weight: bold; 
+}

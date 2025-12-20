@@ -1,6 +1,6 @@
 options(repos = c(CRAN = "https://cloud.r-project.org"))
 #-----
-#PSSI Triage Tool app - June 2025
+#PSSI Triage Tool app - December 2025
 #----
 library(jose)
 library(rsconnect)
@@ -126,6 +126,10 @@ domain_colors <- c(
 
 ui <- navbarPage("COMPASS",
                  id = "main_navbar",
+                 # Link to external CSS file
+                 header = tags$head(
+                   tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
+                 ),
                  
                  tabPanel("Home",
                           fluidRow(
@@ -136,11 +140,11 @@ ui <- navbarPage("COMPASS",
                                    p(em("A navigational tool made \"for-students, by-students\""), style = "font-size: 16px"),
                                    br(),
                                    tags$img(src = "https://images.pexels.com/photos/1438072/pexels-photo-1438072.jpeg", 
-                                           width = "600px"),
+                                            width = "600px"),
                                    br(), br(),
                                    actionButton("start_assessment", "START ASSESSMENT", 
-                                               class = "btn-primary", 
-                                               style = "font-size: 18px; padding: 12px 40px"),
+                                                class = "btn-primary", 
+                                                style = "font-size: 18px; padding: 12px 40px"),
                                    br(), br(),
                                    p("POWERED BY THE LINDEN LAB")
                             )
@@ -150,9 +154,16 @@ ui <- navbarPage("COMPASS",
                  tabPanel("Assessment",
                           sidebarLayout(
                             sidebarPanel(
+                              selectInput("institution", "Select Your Institution:",
+                                          choices = c("Concordia University", "University of Calgary", "Queen's University")),
+                              
                               helpText(HTML("The PSSI is a tool made <em>for students, by students</em>, designed to assess stressors across five domains. Use the colored tabs to the right to rate each stressor by <strong>severity</strong> using the slider. Leave it unrated if it's not applicable to you!")),
                               helpText(strong("Make sure to browse through the stressors in all tabs before clicking submit below.")),
+                              
+                              p(em("Note: Submitting these responses does not record any data. All data is self-contained in this session and will be lost if you close the browser window."),
+                                style = "font-size: 0.85em; color: #555;"),
                               br(),
+                              
                               actionButton("submit", "Submit Responses", class = "btn-primary")
                             ),
                             mainPanel(
