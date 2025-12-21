@@ -181,15 +181,17 @@ ui <- navbarPage("COMPASS",
                  
                  tabPanel("Your Profile",
                           fluidRow(
-                            column(4,
-                                   h4("Stress by Domain"),
-                                   textOutput("radar_interpretation"),
-                                   plotOutput("radar_plot", height = "400px"),
+                            # Left Panel: Institution + Table
+                            column(5,
+                                   uiOutput("institution_label"),
                                    br(),
-                                   uiOutput("domain_text"),
-                                   br(),       
+                                   h4("Your Top 10 Stressors"),
+                                   p("Based on your responses, here are the top stressors you rated highest:"),
+                                   br(),
+                                   uiOutput("top_stressors_table")
                             ),
-                            column(8,
+                            # Right Panel: Filters + Plot
+                            column(7,
                                    h4("Your Stressors"),
                                    checkboxGroupInput("domain_filter", "Filter by Domain:",
                                                       choices = unique(pssi_items$domain),
@@ -245,73 +247,47 @@ server <- function(input, output, session) {
       mutate(label = graph_labels[item]) %>%
       filter(severity > 0)
   })
-  
-  output$radar_plot <- renderPlot({
-    req(responses())
-    data <- responses()
     
-    # Calculate average severity per domain (include all domains)
-    domain_avg <- pssi_items %>%
-      select(domain) %>%
-      distinct() %>%
-      left_join(
-        data %>% group_by(domain) %>% summarise(avg_sev = mean(severity)), 
-        by = "domain"
-      ) %>%
-      mutate(avg_sev = ifelse(is.na(avg_sev), 0, avg_sev)) %>%
-      arrange(domain)
-    
-    max_vals <- rep(10, nrow(domain_avg))
-    min_vals <- rep(0, nrow(domain_avg))
-    user_vals <- domain_avg$avg_sev
-    
-    radar_df <- data.frame(rbind(max_vals, min_vals, user_vals))
-    colnames(radar_df) <- domain_avg$domain
-    rownames(radar_df) <- c("max", "min", "You")
-    
-    par(mar = c(1,1,1,1))
-    fmsb::radarchart(
-      radar_df,
-      axistype = 1,
-      pcol = "#56B4E9",
-      pfcol = scales::alpha("#56B4E9", 0.4),
-      plwd = 4,
-      plty = 1,
-      cglcol = "grey",
-      cglty = 1,
-      axislabcol = "grey",
-      caxislabels = seq(0, 10, 2),
-      cglwd = 0.8,
-      vlcex = 0.7
+  output$institution_label <- renderUI({
+    tags$div(
+      style = "background-color: #E0E0E0; color: #333; padding: 10px 15px; border-radius: 5px; font-weight: bold; display: inline-block;",
+      toupper(input$institution)
     )
   })
   
-  output$domain_text <- renderUI({
-    tagList(
-      tags$ul(
-        tags$li(strong("Academic:"), " Stressors related to exams, assignments, workload, and academic performance."),
-        tags$li(strong("Learning Environment:"), " Stressors related to professor communication, expectations, and supervision."),
-        tags$li(strong("Campus Culture:"), " Stressors related to social environment, competition, discrimination, and program adjustment."),
-        tags$li(strong("Interpersonal:"), " Stressors related to friendships, social pressure, and expectations."),
-        tags$li(strong("Personal:"), " Stressors related to self-care, lifestyle, finances, and concerns for the future.")
+  output$top_stressors_table <- renderUI({
+    req(responses())
+    df <- responses() %>% arrange(desc(severity)) %>% head(10) %>% mutate(rank = row_number())
+    
+    if(nrow(df) == 0) return(p("No stressors reported yet."))
+    
+    rows <- lapply(1:nrow(df), function(i) {
+      row <- df[i,]
+      dom_color <- domain_colors[row$domain]
+      tags$tr(
+        tags$td(row$rank, style="padding:8px; border:1px solid #ddd; text-align:center;"),
+        tags$td(row$label, style="padding:8px; border:1px solid #ddd;"),
+        tags$td(row$domain, style=paste0("padding:8px; border:1px solid #ddd; font-weight:bold; color:", dom_color))
       )
-    )
-  })
-  
-  output$radar_interpretation <- renderText({
-    req(responses())
-    data <- responses()
-    domain_avg <- data %>%
-      group_by(domain) %>%
-      summarise(avg_sev = mean(severity))
-    max_domain <- domain_avg$domain[which.max(domain_avg$avg_sev)]
+    })
     
-    paste0("Based on your responses, it looks like the majority of your stressors fall under the '", max_domain, "' domain. Take a look at the Recommendations tab for tailored support suggestions.")
+    tags$table(style="width:100%; border-collapse:collapse;",
+               tags$thead(
+                 tags$tr(
+                   tags$th("Rank", style="padding:8px; border:1px solid #ddd; background-color:#f9f9f9; width:15%;"),
+                   tags$th("Stressor", style="padding:8px; border:1px solid #ddd; background-color:#f9f9f9; width:55%;"),
+                   tags$th("Domain", style="padding:8px; border:1px solid #ddd; background-color:#f9f9f9; width:30%;")
+                 )
+               ),
+               tags$tbody(rows)
+    )
   })
   
   output$lollipop_plot <- renderPlot({
     req(responses())
     data <- responses() %>% filter(domain %in% input$domain_filter)
+    
+    if(nrow(data) == 0) return(NULL)
     
     data <- data %>%
       mutate(label = factor(label, levels = rev(unique(label))))
@@ -319,7 +295,7 @@ server <- function(input, output, session) {
     ggplot(data) +
       geom_segment(aes(x = 0, xend = severity, y = label, yend = label), color = "gray80", size = 2) +
       geom_point(aes(x = severity, y = label, color = domain), size = 5) +
-      scale_color_brewer(palette = "Set1", name = "Domain") +
+      scale_color_manual(values = domain_colors) +
       scale_x_continuous(limits = c(0, 10), breaks = seq(0, 10, 2), name = "Severity") +
       labs(y = NULL) +
       theme_minimal(base_size = 15) +
