@@ -131,6 +131,7 @@ ui <- navbarPage("COMPASS",
                    tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
                  ),
                  
+                 # --- Tab 1: Home ---
                  tabPanel("Home",
                           fluidRow(
                             column(12, align = "center",
@@ -151,40 +152,68 @@ ui <- navbarPage("COMPASS",
                           )
                  ),
                  
+                 # --- Tab 2: Assessment (REVAMPED LAYOUT) ---
                  tabPanel("Assessment",
-                          sidebarLayout(
-                            sidebarPanel(
-                              selectInput("institution", "Select Your Institution:",
-                                          choices = c("Concordia University", "University of Calgary", "Queen's University")),
-                              
-                              helpText(HTML("The PSSI is a tool made <em>for students, by students</em>, designed to assess stressors across five domains. Use the colored tabs to the right to rate each stressor by <strong>severity</strong> using the slider. Leave it unrated if it's not applicable to you!")),
-                              helpText(strong("Make sure to browse through the stressors in all tabs before clicking submit below.")),
-                              
-                              p(em("Note: Submitting these responses does not record any data. All data is self-contained in this session and will be lost if you close the browser window."),
-                                style = "font-size: 0.85em; color: #555;"),
-                              br(),
-                              
-                              actionButton("submit", "Submit Responses", class = "btn-primary")
-                            ),
-                            mainPanel(
-                              tabsetPanel(
-                                id = "tabs",
-                                tabPanel("Academic", uiOutput("academic_ui")),
-                                tabPanel("Learning Environment", uiOutput("learning_env_ui")),
-                                tabPanel("Campus Culture", uiOutput("campus_culture_ui")),
-                                tabPanel("Interpersonal", uiOutput("interpersonal_ui")),
-                                tabPanel("Personal", uiOutput("personal_ui"))
-                              )
+                          # Container limits the width on ultra-wide screens for better readability
+                          fluidRow(
+                            column(10, offset = 1, 
+                                   
+                                   # -- Top Controls --
+                                   fluidRow(
+                                     column(12, align = "center",
+                                            br(),
+                                            h3("Student Stressor Assessment"),
+                                            p("Select your institution and then rate your stressors in the tabs below.", style = "color: #555;"),
+                                            div(style = "width: 300px; display: inline-block;",
+                                                selectInput("institution", NULL, 
+                                                            choices = c("Concordia University", "University of Calgary", "Queen's University"), 
+                                                            width = "100%")
+                                            ),
+                                            br(), br()
+                                     )
+                                   ),
+                                   
+                                   # -- Instructions --
+                                   fluidRow(
+                                     column(12,
+                                            div(class = "alert alert-info", role = "alert",
+                                                HTML("<strong>Instructions:</strong> Browse through the five domain tabs below. Rate stressors by severity on a scale of 0-10. Leave unrated (0) if not applicable.")
+                                            )
+                                     )
+                                   ),
+                                   
+                                   # -- Domain Tabs (Full Width) --
+                                   tabsetPanel(
+                                     id = "tabs",
+                                     tabPanel("Academic", uiOutput("academic_ui")),
+                                     tabPanel("Learning Environment", uiOutput("learning_env_ui")),
+                                     tabPanel("Campus Culture", uiOutput("campus_culture_ui")),
+                                     tabPanel("Interpersonal", uiOutput("interpersonal_ui")),
+                                     tabPanel("Personal", uiOutput("personal_ui"))
+                                   ),
+                                   
+                                   br(), hr(),
+                                   
+                                   # -- Bottom Action Area --
+                                   fluidRow(
+                                     column(12, align = "center",
+                                            p(em("Note: Submitting these responses does not record any data. All data is self-contained in this session and will be lost if you close the browser window."),
+                                              style = "font-size: 0.9em; color: #777; margin-bottom: 15px;"),
+                                            actionButton("submit", "SUBMIT RESPONSES", class = "btn-primary btn-lg", style = "width: 50%; max-width: 300px;"),
+                                            br(), br(), br()
+                                     )
+                                   )
                             )
                           )
                  ),
                  
+                 # --- Tab 3: Your Profile ---
                  tabPanel("Your Profile",
                           fluidRow(
                             # Left Panel: Institution + Table
                             column(5,
                                    uiOutput("institution_label"),
-                                   br(),
+                                   br(), br(),
                                    h4("Your Top 10 Stressors"),
                                    p("Based on your responses, here are the top stressors you rated highest:"),
                                    br(),
@@ -203,6 +232,7 @@ ui <- navbarPage("COMPASS",
                           )
                  ),
                  
+                 # --- Tab 4: Recommendations ---
                  tabPanel("Recommendations",
                           h4("Recommended Resources"),
                           p("Based on your responses on the PSSI, here are some recommended resources mapped directly to your top ten stressors."),
@@ -216,18 +246,41 @@ server <- function(input, output, session) {
     updateNavbarPage(session, inputId = "main_navbar", selected = "Assessment")
   })
   
+  # --- Render Domain UI (With 2-Column Split) ---
   render_domain_ui <- function(domain_name) {
     items <- pssi_items %>% filter(domain == domain_name)
-    tagList(
-      tags$h4(strong("Rate each of the following stressors by severity."), style = "margin-bottom: 10px;"),
-      lapply(seq_len(nrow(items)), function(i) {
-        id <- items$id[i]
-        full_item <- items$item[i]
-        fluidRow(
-          column(8, tags$div(style = "margin-top: 10px;", strong(full_item))),
-          column(4, sliderInput(inputId = paste0("sev_", id), label = NULL, min = 0, max = 10, value = 0))
+    n <- nrow(items)
+    mid <- ceiling(n / 2)
+    
+    # Split items into two groups
+    items_left <- items[1:mid, ]
+    items_right <- if (n > 1) items[(mid + 1):n, ] else NULL
+    
+    # Helper to create the slider UI for a list of items
+    create_sliders <- function(sub_items) {
+      lapply(seq_len(nrow(sub_items)), function(i) {
+        id <- sub_items$id[i]
+        full_item <- sub_items$item[i]
+        
+        # Style: Label on top, slider full width, margin for separation
+        div(style = "margin-bottom: 30px;",
+            tags$label(full_item, style = "font-weight: bold; font-size: 1.05em;"),
+            sliderInput(inputId = paste0("sev_", id), 
+                        label = NULL, 
+                        min = 0, max = 10, value = 0,
+                        width = "100%",
+                        ticks = TRUE)
         )
       })
+    }
+    
+    # Return a 2-column layout (stacks on mobile, side-by-side on desktop)
+    tagList(
+      br(),
+      fluidRow(
+        column(6, create_sliders(items_left)),
+        column(6, if (!is.null(items_right)) create_sliders(items_right))
+      )
     )
   }
   
@@ -247,10 +300,12 @@ server <- function(input, output, session) {
       mutate(label = graph_labels[item]) %>%
       filter(severity > 0)
   })
-    
+  
+  # --- Your Profile Components ---
+  
   output$institution_label <- renderUI({
     tags$div(
-      style = "background-color: #E0E0E0; color: #333; padding: 10px 15px; border-radius: 5px; font-weight: bold; display: inline-block;",
+      style = "background-color: #E0E0E0; color: #333; padding: 10px 15px; border-radius: 5px; font-weight: bold; display: inline-block; margin-top: 20px;",
       toupper(input$institution)
     )
   })
@@ -259,24 +314,24 @@ server <- function(input, output, session) {
     req(responses())
     df <- responses() %>% arrange(desc(severity)) %>% head(10) %>% mutate(rank = row_number())
     
-    if(nrow(df) == 0) return(p("No stressors reported yet."))
+    if(nrow(df) == 0) return(p("No stressors reported yet.", style = "color: #777; font-style: italic;"))
     
     rows <- lapply(1:nrow(df), function(i) {
       row <- df[i,]
       dom_color <- domain_colors[row$domain]
       tags$tr(
-        tags$td(row$rank, style="padding:8px; border:1px solid #ddd; text-align:center;"),
-        tags$td(row$label, style="padding:8px; border:1px solid #ddd;"),
-        tags$td(row$domain, style=paste0("padding:8px; border:1px solid #ddd; font-weight:bold; color:", dom_color))
+        tags$td(row$rank, style="padding:10px; border-bottom:1px solid #eee; text-align:center;"),
+        tags$td(row$label, style="padding:10px; border-bottom:1px solid #eee;"),
+        tags$td(row$domain, style=paste0("padding:10px; border-bottom:1px solid #eee; font-weight:bold; color:", dom_color))
       )
     })
     
-    tags$table(style="width:100%; border-collapse:collapse;",
+    tags$table(style="width:100%; border-collapse:collapse; margin-top: 10px;",
                tags$thead(
                  tags$tr(
-                   tags$th("Rank", style="padding:8px; border:1px solid #ddd; background-color:#f9f9f9; width:15%;"),
-                   tags$th("Stressor", style="padding:8px; border:1px solid #ddd; background-color:#f9f9f9; width:55%;"),
-                   tags$th("Domain", style="padding:8px; border:1px solid #ddd; background-color:#f9f9f9; width:30%;")
+                   tags$th("Rank", style="padding:10px; border-bottom:2px solid #ddd; text-align: left; color: #555; width:15%;"),
+                   tags$th("Stressor", style="padding:10px; border-bottom:2px solid #ddd; text-align: left; color: #555; width:55%;"),
+                   tags$th("Domain", style="padding:10px; border-bottom:2px solid #ddd; text-align: left; color: #555; width:30%;")
                  )
                ),
                tags$tbody(rows)
