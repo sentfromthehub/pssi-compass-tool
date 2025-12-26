@@ -24,7 +24,7 @@ To run locally:
     ```r
     install.packages(c(
       "jose", "rsconnect", "shiny", "shinyjs", "dplyr", "tibble",
-      "ggplot2", "ggrepel", "RColorBrewer", "fmsb", "scales", "stringr"
+      "ggplot2", "ggrepel", "RColorBrewer", "fmsb", "scales", "stringr", "leaflet"
     ))
     ```
 4.  **Run the application**. Open the `app.R` file in RStudio and click the "Run App" button, or run the following command in the console:
