@@ -28,3 +28,92 @@
     color: #FF7F00; 
     font-weight: bold; 
 }
+
+/* --- Assessment Tab Styles --- */
+.assess-intro {
+    color: #555;
+}
+
+.institution-select-container {
+    width: 300px;
+    display: inline-block;
+}
+
+.slider-group {
+    margin-bottom: 30px;
+}
+
+.slider-label {
+    font-weight: bold;
+    font-size: 1.05em;
+}
+
+.privacy-note {
+    font-size: 0.9em;
+    color: #777;
+    margin-bottom: 15px;
+}
+
+.btn-submit-custom {
+    width: 50%;
+    max-width: 300px;
+}
+
+/* --- Your Profile Tab Styles --- */
+.institution-pill {
+    background-color: #E0E0E0;
+    color: #333;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 20px;
+}
+
+.table-empty-msg {
+    color: #777;
+    font-style: italic;
+}
+
+/* Top 10 Table */
+.stressor-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.stressor-table th {
+    padding: 10px;
+    border-bottom: 2px solid #ddd;
+    text-align: left;
+    color: #555;
+}
+
+.stressor-table td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.td-rank {
+    width: 15%;
+    text-align: center;
+}
+
+.td-item {
+    width: 55%;
+}
+
+.td-domain {
+    width: 30%;
+    font-weight: bold;
+}
+
+/* --- Recommendations Tab Styles --- */
+.view-mode-container {
+    margin-bottom: 20px;
+}
+
+.list-placeholder {
+    color: #777;
+    font-style: italic;
+}

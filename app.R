@@ -14,6 +14,7 @@ library(RColorBrewer)
 library(fmsb)
 library(scales)
 library(stringr)
+library(leaflet)
 
 # Full data setup (all 46 stressors)
 pssi_items <- tibble::tribble(
@@ -136,35 +137,31 @@ ui <- navbarPage("COMPASS",
                           fluidRow(
                             column(12, align = "center",
                                    br(), br(),
-                                   h1("COMPASS", style = "font-size: 48px; font-weight: bold"),
-                                   h4("CAMPUS ONLINE MATCHING OF PERSONALIZED ACADEMIC & STUDENT SUPPORTS", style = "color: #6c8ebf;"),
-                                   p(em("A navigational tool made \"for-students, by-students\""), style = "font-size: 16px"),
+                                   h1("COMPASS", class = "home-title"),
+                                   h4("CAMPUS ONLINE MATCHING OF PERSONALIZED ACADEMIC & STUDENT SUPPORTS", class = "home-subtitle"),
+                                   p(em("A navigational tool made \"for-students, by-students\""), class = "home-tagline"),
                                    br(),
                                    tags$img(src = "https://images.pexels.com/photos/1438072/pexels-photo-1438072.jpeg", 
                                             width = "600px"),
                                    br(), br(),
                                    actionButton("start_assessment", "START ASSESSMENT", 
-                                                class = "btn-primary", 
-                                                style = "font-size: 18px; padding: 12px 40px"),
+                                                class = "btn-primary btn-start"),
                                    br(), br(),
                                    p("POWERED BY THE LINDEN LAB")
                             )
                           )
                  ),
                  
-                 # --- Tab 2: Assessment (REVAMPED LAYOUT) ---
+                 # --- Tab 2: Assessment ---
                  tabPanel("Assessment",
-                          # Container limits the width on ultra-wide screens for better readability
                           fluidRow(
                             column(10, offset = 1, 
-                                   
-                                   # -- Top Controls --
                                    fluidRow(
                                      column(12, align = "center",
                                             br(),
                                             h3("Student Stressor Assessment"),
-                                            p("Select your institution and then rate your stressors in the tabs below.", style = "color: #555;"),
-                                            div(style = "width: 300px; display: inline-block;",
+                                            p("Select your institution and then rate your stressors in the tabs below.", class = "assess-intro"),
+                                            div(class = "institution-select-container",
                                                 selectInput("institution", NULL, 
                                                             choices = c("Concordia University", "University of Calgary", "Queen's University"), 
                                                             width = "100%")
@@ -172,8 +169,6 @@ ui <- navbarPage("COMPASS",
                                             br(), br()
                                      )
                                    ),
-                                   
-                                   # -- Instructions --
                                    fluidRow(
                                      column(12,
                                             div(class = "alert alert-info", role = "alert",
@@ -181,8 +176,6 @@ ui <- navbarPage("COMPASS",
                                             )
                                      )
                                    ),
-                                   
-                                   # -- Domain Tabs (Full Width) --
                                    tabsetPanel(
                                      id = "tabs",
                                      tabPanel("Academic", uiOutput("academic_ui")),
@@ -191,15 +184,12 @@ ui <- navbarPage("COMPASS",
                                      tabPanel("Interpersonal", uiOutput("interpersonal_ui")),
                                      tabPanel("Personal", uiOutput("personal_ui"))
                                    ),
-                                   
                                    br(), hr(),
-                                   
-                                   # -- Bottom Action Area --
                                    fluidRow(
                                      column(12, align = "center",
                                             p(em("Note: Submitting these responses does not record any data. All data is self-contained in this session and will be lost if you close the browser window."),
-                                              style = "font-size: 0.9em; color: #777; margin-bottom: 15px;"),
-                                            actionButton("submit", "SUBMIT RESPONSES", class = "btn-primary btn-lg", style = "width: 50%; max-width: 300px;"),
+                                              class = "privacy-note"),
+                                            actionButton("submit", "SUBMIT RESPONSES", class = "btn-primary btn-lg btn-submit-custom"),
                                             br(), br(), br()
                                      )
                                    )
@@ -210,7 +200,6 @@ ui <- navbarPage("COMPASS",
                  # --- Tab 3: Your Profile ---
                  tabPanel("Your Profile",
                           fluidRow(
-                            # Left Panel: Institution + Table
                             column(5,
                                    uiOutput("institution_label"),
                                    br(), br(),
@@ -219,7 +208,6 @@ ui <- navbarPage("COMPASS",
                                    br(),
                                    uiOutput("top_stressors_table")
                             ),
-                            # Right Panel: Filters + Plot
                             column(7,
                                    h4("Your Stressors"),
                                    checkboxGroupInput("domain_filter", "Filter by Domain:",
@@ -234,9 +222,38 @@ ui <- navbarPage("COMPASS",
                  
                  # --- Tab 4: Recommendations ---
                  tabPanel("Recommendations",
-                          h4("Recommended Resources"),
-                          p("Based on your responses on the PSSI, here are some recommended resources mapped directly to your top ten stressors."),
-                          uiOutput("recommendation_output")
+                          sidebarLayout(
+                            sidebarPanel(
+                              h4("Filters"),
+                              br(),
+                              h5("Stressors:"),
+                              uiOutput("stressor_filter_ui"),
+                              hr(),
+                              h5("Specific Student Groups:"),
+                              checkboxGroupInput("student_group_filters", label = NULL,
+                                                 choices = c("BIPOC Students", 
+                                                             "International Students", 
+                                                             "Mature Students", 
+                                                             "Graduate Students",
+                                                             "First Year Students",
+                                                             "2SLGBTQIA+ Students",
+                                                             "Indigenous Students"),
+                                                 selected = NULL)
+                            ),
+                            mainPanel(
+                              fluidRow(
+                                column(12,
+                                       div(class = "view-mode-container",
+                                           radioButtons("view_mode", "View Mode:",
+                                                        choices = c("List View", "Map View"),
+                                                        selected = "List View",
+                                                        inline = TRUE)
+                                       )
+                                )
+                              ),
+                              uiOutput("results_view")
+                            )
+                          )
                  )
 )
 
@@ -246,25 +263,20 @@ server <- function(input, output, session) {
     updateNavbarPage(session, inputId = "main_navbar", selected = "Assessment")
   })
   
-  # --- Render Domain UI (With 2-Column Split) ---
+  # --- Assessment UI --- 
   render_domain_ui <- function(domain_name) {
     items <- pssi_items %>% filter(domain == domain_name)
     n <- nrow(items)
     mid <- ceiling(n / 2)
-    
-    # Split items into two groups
     items_left <- items[1:mid, ]
     items_right <- if (n > 1) items[(mid + 1):n, ] else NULL
     
-    # Helper to create the slider UI for a list of items
     create_sliders <- function(sub_items) {
       lapply(seq_len(nrow(sub_items)), function(i) {
         id <- sub_items$id[i]
         full_item <- sub_items$item[i]
-        
-        # Style: Label on top, slider full width, margin for separation
-        div(style = "margin-bottom: 30px;",
-            tags$label(full_item, style = "font-weight: bold; font-size: 1.05em;"),
+        div(class = "slider-group",
+            tags$label(full_item, class = "slider-label"),
             sliderInput(inputId = paste0("sev_", id), 
                         label = NULL, 
                         min = 0, max = 10, value = 0,
@@ -273,15 +285,7 @@ server <- function(input, output, session) {
         )
       })
     }
-    
-    # Return a 2-column layout (stacks on mobile, side-by-side on desktop)
-    tagList(
-      br(),
-      fluidRow(
-        column(6, create_sliders(items_left)),
-        column(6, if (!is.null(items_right)) create_sliders(items_right))
-      )
-    )
+    tagList(br(), fluidRow(column(6, create_sliders(items_left)), column(6, if (!is.null(items_right)) create_sliders(items_right))))
   }
   
   output$academic_ui <- renderUI({ render_domain_ui("Academic") })
@@ -301,11 +305,10 @@ server <- function(input, output, session) {
       filter(severity > 0)
   })
   
-  # --- Your Profile Components ---
-  
+  # --- Your Profile Logic --- 
   output$institution_label <- renderUI({
     tags$div(
-      style = "background-color: #E0E0E0; color: #333; padding: 10px 15px; border-radius: 5px; font-weight: bold; display: inline-block; margin-top: 20px;",
+      class = "institution-pill",
       toupper(input$institution)
     )
   })
@@ -313,57 +316,60 @@ server <- function(input, output, session) {
   output$top_stressors_table <- renderUI({
     req(responses())
     df <- responses() %>% arrange(desc(severity)) %>% head(10) %>% mutate(rank = row_number())
-    
-    if(nrow(df) == 0) return(p("No stressors reported yet.", style = "color: #777; font-style: italic;"))
+    if(nrow(df) == 0) return(p("No stressors reported yet.", class = "table-empty-msg"))
     
     rows <- lapply(1:nrow(df), function(i) {
       row <- df[i,]
       dom_color <- domain_colors[row$domain]
       tags$tr(
-        tags$td(row$rank, style="padding:10px; border-bottom:1px solid #eee; text-align:center;"),
-        tags$td(row$label, style="padding:10px; border-bottom:1px solid #eee;"),
-        tags$td(row$domain, style=paste0("padding:10px; border-bottom:1px solid #eee; font-weight:bold; color:", dom_color))
+        tags$td(row$rank, class = "td-rank"),
+        tags$td(row$label, class = "td-item"),
+        tags$td(row$domain, class = "td-domain", style = paste0("color:", dom_color))
       )
     })
-    
-    tags$table(style="width:100%; border-collapse:collapse; margin-top: 10px;",
-               tags$thead(
-                 tags$tr(
-                   tags$th("Rank", style="padding:10px; border-bottom:2px solid #ddd; text-align: left; color: #555; width:15%;"),
-                   tags$th("Stressor", style="padding:10px; border-bottom:2px solid #ddd; text-align: left; color: #555; width:55%;"),
-                   tags$th("Domain", style="padding:10px; border-bottom:2px solid #ddd; text-align: left; color: #555; width:30%;")
-                 )
-               ),
-               tags$tbody(rows)
-    )
+    tags$table(class = "stressor-table",
+               tags$thead(tags$tr(tags$th("Rank"), tags$th("Stressor"), tags$th("Domain"))),
+               tags$tbody(rows))
   })
   
   output$lollipop_plot <- renderPlot({
     req(responses())
     data <- responses() %>% filter(domain %in% input$domain_filter)
-    
     if(nrow(data) == 0) return(NULL)
-    
-    data <- data %>%
-      mutate(label = factor(label, levels = rev(unique(label))))
-    
+    data <- data %>% mutate(label = factor(label, levels = rev(unique(label))))
     ggplot(data) +
       geom_segment(aes(x = 0, xend = severity, y = label, yend = label), color = "gray80", size = 2) +
       geom_point(aes(x = severity, y = label, color = domain), size = 5) +
       scale_color_manual(values = domain_colors) +
       scale_x_continuous(limits = c(0, 10), breaks = seq(0, 10, 2), name = "Severity") +
-      labs(y = NULL) +
-      theme_minimal(base_size = 15) +
-      theme(axis.text.y = element_text(size = 13))
+      labs(y = NULL) + theme_minimal(base_size = 15) + theme(axis.text.y = element_text(size = 13))
   })
   
-  output$recommendation_output <- renderUI({
-    data <- responses() %>% arrange(desc(severity)) %>% head(10)
-    lapply(seq_along(data$item), function(i) {
-      stressor <- data$item[i]
-      domain <- data$domain[i]
-      tags$p(HTML(paste0("<strong>", i, ". ", graph_labels[stressor], ":</strong> Suggested campus resource for ", domain)))
-    })
+  # --- Recommendations Logic ---
+  output$stressor_filter_ui <- renderUI({
+    checkboxGroupInput("stressor_scope", label = NULL,
+                       choices = c("My Top 10 Stressors", "All Services/Supports"),
+                       selected = "My Top 10 Stressors")
+  })
+  
+  output$results_view <- renderUI({
+    if (input$view_mode == "List View") {
+      tagList(
+        h3("List of Resources"),
+        p("Resources matching your top stressors and selected groups will appear here.", class = "list-placeholder")
+      )
+    } else {
+      tagList(
+        h3("Map of Campus Services"),
+        leafletOutput("campus_map", height = "500px")
+      )
+    }
+  })
+  
+  output$campus_map <- renderLeaflet({
+    leaflet() %>%
+      addTiles() %>%
+      setView(lng = -96, lat = 55, zoom = 3)
   })
   
   observeEvent(input$submit, {
