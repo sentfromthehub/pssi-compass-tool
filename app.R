@@ -134,21 +134,24 @@ ui <- navbarPage("COMPASS",
                  
                  # --- Tab 1: Home ---
                  tabPanel("Home",
-                          fluidRow(
-                            column(12, align = "center",
-                                   br(), br(),
-                                   h1("COMPASS", class = "home-title"),
-                                   h4("CAMPUS ONLINE MATCHING OF PERSONALIZED ACADEMIC & STUDENT SUPPORTS", class = "home-subtitle"),
-                                   p(em("A navigational tool made \"for-students, by-students\""), class = "home-tagline"),
-                                   br(),
-                                   tags$img(src = "https://images.pexels.com/photos/1438072/pexels-photo-1438072.jpeg", 
-                                            width = "600px"),
-                                   br(), br(),
-                                   actionButton("start_assessment", "START ASSESSMENT", 
-                                                class = "btn-primary btn-start"),
-                                   br(), br(),
-                                   p("POWERED BY THE LINDEN LAB")
-                            )
+                          div(class = "home-container",
+                              fluidRow(
+                                column(12, align = "center",
+                                       div(class = "home-content-wrapper",
+                                           h1("COMPASS", class = "home-title"),
+                                           h4("CAMPUS ONLINE MATCHING OF PERSONALIZED ACADEMIC & STUDENT SUPPORTS", class = "home-subtitle"),
+                                           p(em("A navigational tool made \"for-students, by-students\""), class = "home-tagline"),
+                                           br(),
+                                           tags$img(src = "https://images.pexels.com/photos/1438072/pexels-photo-1438072.jpeg", 
+                                                    width = "600px", class = "home-img"),
+                                           br(), br(),
+                                           actionButton("start_assessment", "START ASSESSMENT", 
+                                                        class = "btn-start"),
+                                           br(), br(),
+                                           p("POWERED BY THE LINDEN LAB", class = "footer-text")
+                                       )
+                                )
+                              )
                           )
                  ),
                  
@@ -234,9 +237,9 @@ ui <- navbarPage("COMPASS",
                                                  choices = c("BIPOC Students", 
                                                              "International Students", 
                                                              "Mature Students", 
-                                                             "Graduate Students",
-                                                             "First Year Students",
-                                                             "2SLGBTQIA+ Students",
+                                                             "Graduate Students", 
+                                                             "First Year Students", 
+                                                             "2SLGBTQIA+ Students", 
                                                              "Indigenous Students"),
                                                  selected = NULL)
                             ),
@@ -263,7 +266,7 @@ server <- function(input, output, session) {
     updateNavbarPage(session, inputId = "main_navbar", selected = "Assessment")
   })
   
-  # --- Assessment UI --- 
+  # --- Assessment UI ---
   render_domain_ui <- function(domain_name) {
     items <- pssi_items %>% filter(domain == domain_name)
     n <- nrow(items)
@@ -305,7 +308,7 @@ server <- function(input, output, session) {
       filter(severity > 0)
   })
   
-  # --- Your Profile Logic --- 
+  # --- Your Profile Logic ---
   output$institution_label <- renderUI({
     tags$div(
       class = "institution-pill",
