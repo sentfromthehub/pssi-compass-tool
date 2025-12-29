@@ -1,3 +1,44 @@
+/* --- Navigation Bar Styles --- */
+.navbar-default {
+    background-color: #ffffff;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.navbar-default .navbar-brand {
+    font-family: 'Codec Pro', sans-serif;
+    color: #000 !important;
+    font-weight: 700;
+    font-size: 24px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.navbar-nav > li > a {
+    color: #555 !important;
+    background-color: #f2f2f2;
+    margin-right: 2px;
+    border-radius: 0;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 15px 25px;
+    transition: background-color 0.2s;
+}
+
+.navbar-nav > li > a:hover {
+    background-color: #e0e0e0;
+    color: #333 !important;
+}
+
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:focus,
+.navbar-default .navbar-nav > .active > a:hover {
+    background-color: #bfbfbf !important;
+    color: #000 !important;
+    font-weight: 700;
+}
+
 /* --- Home Page --- */
 .home-container {
     background-image: radial-gradient(#d0d0d0 1.5px, transparent 1.5px);
@@ -70,31 +111,31 @@
 }
 
 /* --- Custom Coloured Tabs for PSSI Domains --- */
-.nav-tabs > li > a[data-value='Academic'] { 
+.tabbable > .nav-tabs > li > a[data-value='Academic'] { 
     border-top: 3px solid #E41A1C; 
     color: #E41A1C; 
     font-weight: bold; 
 }
 
-.nav-tabs > li > a[data-value='Learning Environment'] { 
+.tabbable > .nav-tabs > li > a[data-value='Learning Environment'] { 
     border-top: 3px solid #377EB8; 
     color: #377EB8; 
     font-weight: bold; 
 }
 
-.nav-tabs > li > a[data-value='Campus Culture'] { 
+.tabbable > .nav-tabs > li > a[data-value='Campus Culture'] { 
     border-top: 3px solid #4DAF4A; 
     color: #4DAF4A; 
     font-weight: bold; 
 }
 
-.nav-tabs > li > a[data-value='Interpersonal'] { 
+.tabbable > .nav-tabs > li > a[data-value='Interpersonal'] { 
     border-top: 3px solid #984EA3; 
     color: #984EA3; 
     font-weight: bold; 
 }
 
-.nav-tabs > li > a[data-value='Personal'] { 
+.tabbable > .nav-tabs > li > a[data-value='Personal'] { 
     border-top: 3px solid #FF7F00; 
     color: #FF7F00; 
     font-weight: bold; 
