@@ -1,8 +1,41 @@
+/* --- Global Settings --- */
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #333;
+    background-color: #ffffff; 
+}
+
+/* --- Dotted Background Wrapper --- */
+.dotted-page {
+    background-image: radial-gradient(#d0d0d0 1.5px, transparent 1.5px);
+    background-size: 30px 30px;
+    background-color: #ffffff;
+    min-height: calc(100vh - 50px);
+    padding-bottom: 50px;
+    padding-top: 20px;
+    margin-left: -15px;
+    margin-right: -15px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* --- White Card Container --- */
+.content-card {
+    background-color: #ffffff;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    padding: 30px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
 /* --- Navigation Bar Styles --- */
 .navbar-default {
     background-color: #ffffff;
     border: none;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    margin-bottom: 0;
 }
 
 .navbar-default .navbar-brand {
@@ -39,15 +72,7 @@
     font-weight: 700;
 }
 
-/* --- Home Page --- */
-.home-container {
-    background-image: radial-gradient(#d0d0d0 1.5px, transparent 1.5px);
-    background-size: 30px 30px;
-    background-color: #ffffff;
-    min-height: calc(100vh - 50px);
-    padding-bottom: 50px;
-}
-
+/* --- Home Page Specifics --- */
 .home-content-wrapper {
     padding-top: 40px;
 }
@@ -84,6 +109,7 @@
     margin-bottom: 40px;
 }
 
+/* --- Button Styles --- */
 .btn-start {
     background-color: #3f5166;
     color: #fff;
@@ -110,35 +136,71 @@
     margin-top: 60px;
 }
 
+/* --- Internal Assessment Tabs --- */
+.tabbable > .nav-tabs {
+    border-bottom: 2px solid #eee;
+    margin-bottom: 30px;
+}
+
+.tabbable > .nav-tabs > li > a {
+    background-color: transparent;
+    border: none;
+    color: #777 !important;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 10px 15px;
+}
+
+.tabbable > .nav-tabs > li.active > a {
+    background-color: #fff !important;
+    border: 1px solid #eee;
+    border-bottom: 1px solid white;
+}
+
 /* --- Custom Coloured Tabs for PSSI Domains --- */
 .tabbable > .nav-tabs > li > a[data-value='Academic'] { 
-    border-top: 3px solid #E41A1C; 
-    color: #E41A1C; 
+    color: #E41A1C !important; 
     font-weight: bold; 
+}
+
+.tabbable > .nav-tabs > li.active > a[data-value='Academic'] { 
+    border-top: 4px solid #E41A1C !important; 
 }
 
 .tabbable > .nav-tabs > li > a[data-value='Learning Environment'] { 
-    border-top: 3px solid #377EB8; 
-    color: #377EB8; 
+    color: #377EB8 !important; 
     font-weight: bold; 
+}
+
+.tabbable > .nav-tabs > li.active > a[data-value='Learning Environment'] { 
+    border-top: 4px solid #377EB8 !important; 
 }
 
 .tabbable > .nav-tabs > li > a[data-value='Campus Culture'] { 
-    border-top: 3px solid #4DAF4A; 
-    color: #4DAF4A; 
+    color: #4DAF4A !important; 
     font-weight: bold; 
+}
+
+.tabbable > .nav-tabs > li.active > a[data-value='Campus Culture'] { 
+    border-top: 4px solid #4DAF4A !important; 
 }
 
 .tabbable > .nav-tabs > li > a[data-value='Interpersonal'] { 
-    border-top: 3px solid #984EA3; 
-    color: #984EA3; 
+    color: #984EA3 !important; 
     font-weight: bold; 
 }
 
+.tabbable > .nav-tabs > li.active > a[data-value='Interpersonal'] { 
+    border-top: 4px solid #984EA3 !important; 
+}
+
 .tabbable > .nav-tabs > li > a[data-value='Personal'] { 
-    border-top: 3px solid #FF7F00; 
-    color: #FF7F00; 
+    color: #FF7F00 !important; 
     font-weight: bold; 
+}
+
+.tabbable > .nav-tabs > li.active > a[data-value='Personal'] { 
+    border-top: 4px solid #FF7F00 !important; 
 }
 
 /* --- Assessment Tab Styles --- */
@@ -171,7 +233,7 @@
     max-width: 300px;
 }
 
-/* --- Your Profile Tab Styles --- */
+/* --- Profile Components --- */
 .institution-pill {
     background-color: #E0E0E0;
     color: #333;
@@ -187,7 +249,7 @@
     font-style: italic;
 }
 
-/* --- Top 10 Table --- */
+/* --- Stressor Table --- */
 .stressor-table {
     width: 100%;
     border-collapse: collapse;
@@ -220,7 +282,7 @@
     font-weight: bold;
 }
 
-/* --- Recommendations Tab Styles --- */
+/* --- Recommendations Components --- */
 .view-mode-container {
     margin-bottom: 20px;
 }
