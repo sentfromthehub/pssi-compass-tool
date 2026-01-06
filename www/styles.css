@@ -72,6 +72,19 @@ body {
     font-weight: 700;
 }
 
+/* --- Disabled Tab Styling --- */
+.navbar-nav > li > a.disabled-tab {
+    color: #ccc !important;
+    background-color: #f9f9f9 !important;
+    cursor: not-allowed !important;
+    pointer-events: auto;
+}
+
+.navbar-nav > li > a.disabled-tab:hover {
+    background-color: #f9f9f9 !important;
+    color: #ccc !important;
+}
+
 /* --- Home Page Specifics --- */
 .home-content-wrapper {
     padding-top: 40px;

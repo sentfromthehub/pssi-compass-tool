@@ -127,9 +127,11 @@ domain_colors <- c(
 
 ui <- navbarPage("COMPASS",
                  id = "main_navbar",
-                 # Link to external CSS file
+                 # Link to external CSS and JS files
                  header = tags$head(
-                   tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
+                   tags$link(rel = "stylesheet", type = "text/css", href = "styles.css"),
+                   tags$script(src = "script.js"),
+                   useShinyjs()
                  ),
                  
                  # --- Tab 1: Home ---
@@ -286,6 +288,15 @@ ui <- navbarPage("COMPASS",
 
 server <- function(input, output, session) {
   
+  # --- init: disable result tabs on startup ---
+  observe({
+    addClass(selector = "a[data-value='Your Profile']", class = "disabled-tab")
+    runjs("$('a[data-value=\"Your Profile\"]').attr('title', 'Please fill out the assessment first');")
+    
+    addClass(selector = "a[data-value='Recommendations']", class = "disabled-tab")
+    runjs("$('a[data-value=\"Recommendations\"]').attr('title', 'Please fill out the assessment first');")
+  })
+  
   observeEvent(input$start_assessment, {
     updateNavbarPage(session, inputId = "main_navbar", selected = "Assessment")
   })
@@ -399,7 +410,14 @@ server <- function(input, output, session) {
       setView(lng = -96, lat = 55, zoom = 3)
   })
   
+  # --- Enable Tabs ---
   observeEvent(input$submit, {
+    removeClass(selector = "a[data-value='Your Profile']", class = "disabled-tab")
+    removeClass(selector = "a[data-value='Recommendations']", class = "disabled-tab")
+    
+    runjs("$('a[data-value=\"Your Profile\"]').removeAttr('title');")
+    runjs("$('a[data-value=\"Recommendations\"]').removeAttr('title');")
+    
     updateNavbarPage(session, inputId = "main_navbar", selected = "Your Profile")
   })
 }
