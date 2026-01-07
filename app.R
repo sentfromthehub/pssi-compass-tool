@@ -1,6 +1,6 @@
 options(repos = c(CRAN = "https://cloud.r-project.org"))
 #-----
-#PSSI Triage Tool app - December 2025
+#PSSI Triage Tool app - January 2025
 #----
 library(jose)
 library(rsconnect)
@@ -16,104 +16,64 @@ library(scales)
 library(stringr)
 library(leaflet)
 
-# Full data setup (all 46 stressors)
+# Abridged data setup (26 stressors)
 pssi_items <- tibble::tribble(
   ~id, ~domain, ~item,
-  1, "Academic", "Preparing for exams",
-  2, "Academic", "Writing exams",
-  3, "Academic", "Writing multiple exams around the same time",
-  4, "Academic", "Exams worth more than 50% of course grade",
-  5, "Academic", "Heavily weighted assignments",
-  6, "Academic", "Having multiple assignments due around the same time",
-  7, "Academic", "Managing my academic workload",
-  8, "Academic", "Receiving a bad grade",
-  9, "Academic", "Managing a high GPA",
-  10, "Academic", "Working on my thesis",
-  11, "Academic", "Performing well at my professional placement (i.e., practicum, clerkship, etc.)",
-  12, "Learning Environment", "Poor communication from professor",
-  13, "Learning Environment", "Unclear expectations from professor",
-  14, "Learning Environment", "Lack of guidance from professor",
-  15, "Learning Environment", "Meeting with my professor",
-  16, "Learning Environment", "Meeting my thesis/placement supervisor's expectations",
-  17, "Learning Environment", "Lack of mentoring from my thesis/placement supervisor",
-  18, "Campus Culture", "Adjusting to the post-secondary lifestyle",
-  19, "Campus Culture", "Adjusting to my program",
-  20, "Campus Culture", "Academic competition among my peers",
-  21, "Campus Culture", "Feeling like I'm not working hard enough",
-  22, "Campus Culture", "Feeling like my peers are smarter than I am",
-  23, "Campus Culture", "Pressure to succeed",
-  24, "Campus Culture", "Discrimination on campus",
-  25, "Campus Culture", "Sexual harassment on campus",
-  26, "Interpersonal", "Making new friends",
-  27, "Interpersonal", "Maintaining friendships",
-  28, "Interpersonal", "Networking with the \"right\" people",
-  29, "Interpersonal", "Feeling pressured to socialize",
-  30, "Interpersonal", "Balancing a social life with academics",
-  31, "Interpersonal", "Comparing myself to others",
-  32, "Interpersonal", "Comparing my life to others' on social media",
-  33, "Interpersonal", "Meeting other peoples' expectations of me",
-  34, "Interpersonal", "Meeting my own expectations",
-  35, "Personal", "Making sure that I get enough sleep",
-  36, "Personal", "Making sure that I get enough exercise",
-  37, "Personal", "Making sure that I eat healthy",
-  38, "Personal", "Having to prepare meals for myself",
-  39, "Personal", "Balancing working at my job with my academics",
-  40, "Personal", "Balancing my extracurriculars with academics",
-  41, "Personal", "Feeling guilty about taking time for my hobbies/interests",
-  42, "Personal", "Having to take student loans",
-  43, "Personal", "Worrying about paying off debt",
-  44, "Personal", "Worrying about getting a job after graduating",
-  45, "Personal", "Worrying about getting into a new program after graduating",
-  46, "Personal", "Worrying about reaching major \"life events\" (i.e., buying a house, marriage, children)"
+  1, "Academic", "Preparing for and writing exams",
+  2, "Academic", "Having multiple assessments due around the same time",
+  3, "Academic", "Heavily weighted assessments",
+  4, "Academic", "Managing my academic workload",
+  5, "Academic", "Maintaining my GPA",
+  6, "Academic", "Working on my thesis",
+  7, "Academic", "Performing well at my professional placement (i.e., practicum, clerkship, etc.)",
+  8, "Learning Environment", "Poor communication from my professor(s) or supervisor",
+  9, "Learning Environment", "Meeting with my professor(s) or supervisor",
+  10, "Learning Environment", "Meeting my professor(s) or supervisor's expectations",
+  11, "Campus Culture", "Adjusting to the post-secondary setting",
+  12, "Campus Culture", "Academic competition among my peers",
+  13, "Campus Culture", "Feeling like I'm not working hard enough or am not smart enough",
+  14, "Campus Culture", "Pressure to succeed",
+  15, "Campus Culture", "Experiencing discrimination and/or harassment on campus",
+  16, "Interpersonal", "Managing friendships",
+  17, "Interpersonal", "Networking with the \"right\" people",
+  18, "Interpersonal", "Feeling pressured to socialize or engage in a social life",
+  19, "Interpersonal", "Balancing my academics with everything else (socializing, extracurriculars, etc.)",
+  20, "Interpersonal", "Comparing myself to others",
+  21, "Interpersonal", "Meeting expectations (my own expectations for myself, or others’ expectations of me)",
+  22, "Personal", "Taking care of my health (getting enough sleep, exercise, eating well)",
+  23, "Personal", "Balancing my paid work with my academics",
+  24, "Personal", "Finding time for my hobbies/interests",
+  25, "Personal", "Having to take student loans and worrying about debt",
+  26, "Personal", "Worrying about “what happens next” (getting a job after graduation, getting into a new program)"
 )
 
 graph_labels <- c(
-  "Preparing for exams" = "Exam Prep",
-  "Writing exams" = "Exams",
-  "Writing multiple exams around the same time" = "Multi Exams",
-  "Exams worth more than 50% of course grade" = "Heavy Exams",
-  "Heavily weighted assignments" = "Heavy Assign",
-  "Having multiple assignments due around the same time" = "Mult Assign",
+  "Preparing for and writing exams" = "Exams",
+  "Having multiple assessments due around the same time" = "Multi Deadlines",
+  "Heavily weighted assessments" = "Heavy Weights",
   "Managing my academic workload" = "Workload",
-  "Receiving a bad grade" = "Bad Grade",
-  "Managing a high GPA" = "GPA",
+  "Maintaining my GPA" = "GPA",
   "Working on my thesis" = "Thesis",
   "Performing well at my professional placement (i.e., practicum, clerkship, etc.)" = "Placement",
-  "Poor communication from professor" = "Poor comm",
-  "Unclear expectations from professor" = "Clarity",
-  "Lack of guidance from professor" = "Guidance",
-  "Meeting with my professor" = "Meet Professor",
-  "Meeting my thesis/placement supervisor's expectations" = "Meet Expec (Advisor)",
-  "Lack of mentoring from my thesis/placement supervisor" = "Mentoring",
-  "Adjusting to the post-secondary lifestyle" = "Lifestyle",
-  "Adjusting to my program" = "Program",
+  "Poor communication from my professor(s) or supervisor" = "Poor Comm",
+  "Meeting with my professor(s) or supervisor" = "Meeting Profs",
+  "Meeting my professor(s) or supervisor's expectations" = "Prof Expectations",
+  "Adjusting to the post-secondary setting" = "Adjusting",
   "Academic competition among my peers" = "Competition",
-  "Feeling like I'm not working hard enough" = "Work Hard",
-  "Feeling like my peers are smarter than I am" = "Smarter",
-  "Pressure to succeed" = "Succeed",
-  "Discrimination on campus" = "Discrimination",
-  "Sexual harassment on campus" = "Harassment",
-  "Making new friends" = "New Friends",
-  "Maintaining friendships" = "Maintain Friends",
+  "Feeling like I'm not working hard enough or am not smart enough" = "Imposter Syndrome",
+  "Pressure to succeed" = "Pressure",
+  "Experiencing discrimination and/or harassment on campus" = "Discrimination",
+  "Managing friendships" = "Friendships",
   "Networking with the \"right\" people" = "Networking",
-  "Feeling pressured to socialize" = "Pressure (Social)",
-  "Balancing a social life with academics" = "Balance (Social)",
-  "Comparing myself to others" = "Comparing",
-  "Comparing my life to others' on social media" = "Soc Media",
-  "Meeting other peoples' expectations of me" = "Meet Expec (Others)",
-  "Meeting my own expectations" = "Meet Expec (Self)",
-  "Making sure that I get enough sleep" = "Sleep",
-  "Making sure that I get enough exercise" = "Exercise",
-  "Making sure that I eat healthy" = "Nutrition",
-  "Having to prepare meals for myself" = "Cooking",
-  "Balancing working at my job with my academics" = "Balance (Work)",
-  "Balancing my extracurriculars with academics" = "Balance (XCs)",
-  "Feeling guilty about taking time for my hobbies/interests" = "Hobbies",
-  "Having to take student loans" = "Loans",
-  "Worrying about paying off debt" = "Debt",
-  "Worrying about getting a job after graduating" = "Job",
-  "Worrying about getting into a new program after graduating" = "New Program",
-  "Worrying about reaching major \"life events\" (i.e., buying a house, marriage, children)" = "Life Events"
+  "Feeling pressured to socialize or engage in a social life" = "Social Pressure",
+  "Balancing my academics with everything else (socializing, extracurriculars, etc.)" = "Balance (Social)",
+  "Comparing myself to others" = "Comparison",
+  "Meeting expectations (my own expectations for myself, or others’ expectations of me)" = "Expectations",
+  "Taking care of my health (getting enough sleep, exercise, eating well)" = "Health/Self-care",
+  "Balancing my paid work with my academics" = "Balance (Work)",
+  "Finding time for my hobbies/interests" = "Hobbies",
+  "Having to take student loans and worrying about debt" = "Finances/Debt",
+  "Worrying about “what happens next” (getting a job after graduation, getting into a new program)" = "Future/Career"
 )
 
 domain_colors <- c(
@@ -291,10 +251,10 @@ server <- function(input, output, session) {
   # --- init: disable result tabs on startup ---
   observe({
     addClass(selector = "a[data-value='Your Profile']", class = "disabled-tab")
-    runjs("$('a[data-value=\"Your Profile\"]').attr('title', 'Please fill out the assessment first');")
-    
     addClass(selector = "a[data-value='Recommendations']", class = "disabled-tab")
-    runjs("$('a[data-value=\"Recommendations\"]').attr('title', 'Please fill out the assessment first');")
+    
+    runjs("$('a[data-value=\"Your Profile\"]').attr('title', 'Please fill out the assessment first.');")
+    runjs("$('a[data-value=\"Recommendations\"]').attr('title', 'Please fill out the assessment first.');")
   })
   
   observeEvent(input$start_assessment, {
@@ -304,10 +264,6 @@ server <- function(input, output, session) {
   # --- Assessment UI ---
   render_domain_ui <- function(domain_name) {
     items <- pssi_items %>% filter(domain == domain_name)
-    n <- nrow(items)
-    mid <- ceiling(n / 2)
-    items_left <- items[1:mid, ]
-    items_right <- if (n > 1) items[(mid + 1):n, ] else NULL
     
     create_sliders <- function(sub_items) {
       lapply(seq_len(nrow(sub_items)), function(i) {
@@ -323,7 +279,13 @@ server <- function(input, output, session) {
         )
       })
     }
-    tagList(br(), fluidRow(column(6, create_sliders(items_left)), column(6, if (!is.null(items_right)) create_sliders(items_right))))
+    
+    tagList(
+      br(),
+      fluidRow(
+        column(10, offset = 1, create_sliders(items))
+      )
+    )
   }
   
   output$academic_ui <- renderUI({ render_domain_ui("Academic") })
@@ -374,7 +336,9 @@ server <- function(input, output, session) {
     req(responses())
     data <- responses() %>% filter(domain %in% input$domain_filter)
     if(nrow(data) == 0) return(NULL)
-    data <- data %>% mutate(label = factor(label, levels = rev(unique(label))))
+    
+    data <- data %>% arrange(severity) %>% mutate(label = factor(label, levels = unique(label)))
+    
     ggplot(data) +
       geom_segment(aes(x = 0, xend = severity, y = label, yend = label), color = "gray80", size = 2) +
       geom_point(aes(x = severity, y = label, color = domain), size = 5) +
