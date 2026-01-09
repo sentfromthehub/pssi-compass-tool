@@ -1,45 +1,45 @@
 /* --- Global Settings --- */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&family=Quicksand:wght@300;400;500;600;700&display=swap');
+
 body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    color: #333;
-    background-color: #ffffff; 
+    font-family: 'Nunito', sans-serif;
+    color: #e0e0e0;
+    background: linear-gradient(135deg, #0f121a 0%, #1a202c 100%);
+    background-attachment: fixed;
 }
 
-/* --- Dotted Background Wrapper --- */
-.dotted-page {
-    background-image: radial-gradient(#d0d0d0 1.5px, transparent 1.5px);
-    background-size: 30px 30px;
-    background-color: #ffffff;
-    min-height: calc(100vh - 50px);
-    padding-bottom: 50px;
-    padding-top: 20px;
-    margin-left: -15px;
-    margin-right: -15px;
-    padding-left: 15px;
-    padding-right: 15px;
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    color: #ffffff; 
 }
 
 /* --- White Card Container --- */
 .content-card {
-    background-color: #ffffff;
+    background-color: #ffffff; 
     border: 1px solid #e1e1e1;
     border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     padding: 30px;
     margin-bottom: 20px;
     margin-top: 10px;
+    color: #333333;
+}
+
+.content-card h1, .content-card h2, .content-card h3, .content-card h4, .content-card h5, .content-card h6 {
+    color: #333333;
 }
 
 /* --- Navigation Bar Styles --- */
 .navbar-default {
-    background-color: #ffffff;
+    background-color: #ffffff; 
     border: none;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     margin-bottom: 0;
 }
 
 .navbar-default .navbar-brand {
-    font-family: 'Codec Pro', sans-serif;
+    font-family: 'Quicksand', sans-serif;
     color: #000 !important;
     font-weight: 700;
     font-size: 24px;
@@ -49,7 +49,7 @@ body {
 
 .navbar-nav > li > a {
     color: #555 !important;
-    background-color: #f2f2f2;
+    background-color: transparent;
     margin-right: 2px;
     border-radius: 0;
     text-transform: uppercase;
@@ -67,8 +67,8 @@ body {
 .navbar-default .navbar-nav > .active > a,
 .navbar-default .navbar-nav > .active > a:focus,
 .navbar-default .navbar-nav > .active > a:hover {
-    background-color: #bfbfbf !important;
-    color: #000 !important;
+    background-color: #3f5166 !important;
+    color: #fff !important;
     font-weight: 700;
 }
 
@@ -91,33 +91,33 @@ body {
 }
 
 .home-title {
-    font-family: 'Codec Pro', sans-serif;
+    font-family: 'Quicksand', sans-serif;
     font-size: 56px;
     font-weight: 700;
     margin-bottom: 10px;
-    color: #333;
+    color: #fff;
     letter-spacing: -1px;
 }
 
 .home-subtitle {
-    font-size: 16px;
+    font-size: 22px;
     font-weight: 700;
-    color: #5D7285;
+    color: #a0aec0;
     text-transform: uppercase;
     letter-spacing: 1.5px;
     margin-bottom: 20px;
 }
 
 .home-tagline {
-    font-size: 18px;
+    font-size: 20px;
     font-style: italic;
-    color: #555;
+    color: #e0e0e0;
     margin-bottom: 40px;
-    font-family: Georgia, serif;
+    font-family: 'Quicksand', serif;
 }
 
 .home-img {
-    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
     border-radius: 2px;
     margin-bottom: 40px;
 }
@@ -143,7 +143,7 @@ body {
 
 .footer-text {
     font-size: 11px;
-    color: #999;
+    color: #777;
     text-transform: uppercase;
     letter-spacing: 2px;
     margin-top: 60px;
@@ -168,6 +168,7 @@ body {
     background-color: #fff !important;
     border: 1px solid #eee;
     border-bottom: 1px solid white;
+    color: #333 !important;
 }
 
 /* --- Custom Coloured Tabs for PSSI Domains --- */
@@ -233,6 +234,7 @@ body {
 .slider-label {
     font-weight: bold;
     font-size: 1.05em;
+    color: #333;
 }
 
 .privacy-note {
@@ -267,6 +269,7 @@ body {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
+    color: #333;
 }
 
 .stressor-table th {
