@@ -11,7 +11,7 @@ body {
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Quicksand', sans-serif;
     font-weight: 700;
-    color: #ffffff; 
+    color: #ffffff;
 }
 
 /* --- White Card Container --- */
@@ -32,57 +32,63 @@ h1, h2, h3, h4, h5, h6 {
 
 /* --- Navigation Bar Styles --- */
 .navbar-default {
-    background-color: #ffffff; 
+    background-color: transparent !important; 
     border: none;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-shadow: none;
+    margin-top: 15px; 
     margin-bottom: 0;
 }
 
 .navbar-default .navbar-brand {
     font-family: 'Quicksand', sans-serif;
-    color: #000 !important;
+    color: #fff !important;
     font-weight: 700;
     font-size: 24px;
     letter-spacing: 1px;
     text-transform: uppercase;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3); 
 }
 
 .navbar-nav > li > a {
-    color: #555 !important;
+    color: rgba(255, 255, 255, 0.8) !important; 
     background-color: transparent;
-    margin-right: 2px;
-    border-radius: 0;
-    text-transform: uppercase;
     font-weight: 600;
     font-size: 13px;
-    padding: 15px 25px;
-    transition: background-color 0.2s;
+    text-transform: uppercase;
+    padding: 10px 20px; 
+    margin-right: 5px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
 }
 
 .navbar-nav > li > a:hover {
-    background-color: #e0e0e0;
-    color: #333 !important;
+    color: #fff !important;
+    background-color: rgba(255, 255, 255, 0.1) !important; 
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
 }
 
 .navbar-default .navbar-nav > .active > a,
 .navbar-default .navbar-nav > .active > a:focus,
 .navbar-default .navbar-nav > .active > a:hover {
-    background-color: #3f5166 !important;
     color: #fff !important;
+    background-color: rgba(255, 255, 255, 0.2) !important; 
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    border-radius: 20px;
     font-weight: 700;
 }
 
 /* --- Disabled Tab Styling --- */
 .navbar-nav > li > a.disabled-tab {
-    color: #ccc !important;
-    background-color: #f9f9f9 !important;
+    color: rgba(255, 255, 255, 0.3) !important; 
+    background-color: transparent !important;
     cursor: not-allowed !important;
     pointer-events: auto;
 }
 
 .navbar-nav > li > a.disabled-tab:hover {
-    background-color: #f9f9f9 !important;
-    color: #ccc !important;
+    background-color: transparent !important;
+    color: rgba(255, 255, 255, 0.3) !important;
 }
 
 /* --- Home Page Specifics --- */
