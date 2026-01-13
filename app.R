@@ -97,22 +97,38 @@ ui <- navbarPage("COMPASS",
                  
                  # --- Tab 1: Home ---
                  tabPanel("Home",
-                          fluidRow(
-                            column(12, align = "center",
-                                   div(class = "home-content-wrapper",
-                                       h1("COMPASS", class = "home-title"),
-                                       h4("CAMPUS ONLINE MATCHING OF PERSONALIZED ACADEMIC & STUDENT SUPPORTS", class = "home-subtitle"),
-                                       p(em("A navigational tool made \"for-students, by-students\""), class = "home-tagline"),
-                                       br(),
-                                       tags$img(src = "https://images.pexels.com/photos/1438072/pexels-photo-1438072.jpeg", 
-                                                width = "600px", class = "home-img"),
-                                       br(), br(),
-                                       actionButton("start_assessment", "START ASSESSMENT", 
-                                                    class = "btn-start"),
-                                       br(), br(),
-                                       p("POWERED BY THE LINDEN LAB", class = "footer-text")
-                                   )
-                            )
+                          div(class = "home-container",
+                              fluidRow(
+                                column(12, align = "center",
+                                       div(class = "hero-content",
+                                           h1("COMPASS", class = "hero-title"),
+                                           h4("CAMPUS ONLINE MATCHING OF PERSONALIZED ACADEMIC & STUDENT SUPPORTS", class = "hero-subtitle"),
+                                           p(em("A navigational tool made \"for-students, by-students\""), class = "hero-tagline"),
+                                           br(),
+                                           tags$img(src = "https://images.pexels.com/photos/1438072/pexels-photo-1438072.jpeg", 
+                                                    width = "600px", class = "home-img"),
+                                           br(), br(),
+                                           
+                                           div(class = "partners-section",
+                                               p("PARTNER INSTITUTIONS", class = "partners-label"),
+                                               div(class = "partners-logos",
+                                                   tags$a(href = "https://www.queensu.ca/", target = "_blank",
+                                                          tags$img(src = "queens.png", class = "partner-logo")),
+                                                   tags$a(href = "https://www.concordia.ca/", target = "_blank",
+                                                          tags$img(src = "concordia.png", class = "partner-logo")),
+                                                   tags$a(href = "https://www.ucalgary.ca/", target = "_blank",
+                                                          tags$img(src = "calgary.png", class = "partner-logo"))
+                                               )
+                                           ),
+                                           br(),
+                                           
+                                           actionButton("start_assessment", "START JOURNEY", 
+                                                        class = "btn-glass"),
+                                           br(), br(),
+                                           p("POWERED BY THE LINDEN LAB", class = "footer-text")
+                                       )
+                                )
+                              )
                           )
                  ),
                  
@@ -330,9 +346,7 @@ server <- function(input, output, session) {
     data <- responses() %>% filter(domain %in% input$domain_filter)
     if(nrow(data) == 0) return(NULL)
     
-    data <- data %>% arrange(severity) %>% mutate(label = factor(label, levels = unique(label)))
-    
-    ggplot(data) +
+    ggplot(data, aes(x = severity, y = reorder(item, severity), color = domain)) +
       geom_segment(aes(x = 0, xend = severity, y = label, yend = label), color = "gray80", size = 2) +
       geom_point(aes(x = severity, y = label, color = domain), size = 5) +
       scale_color_manual(values = domain_colors) +
