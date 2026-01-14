@@ -14,19 +14,20 @@ h1, h2, h3, h4, h5, h6 {
     color: #ffffff;
 }
 
-/* --- White Card Container --- */
-.content-card {
-    background-color: #ffffff; 
-    border: 1px solid #e1e1e1;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+/* --- Glass Card System --- */
+.glass-card {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
     padding: 30px;
     margin-bottom: 20px;
     margin-top: 10px;
     color: #333333;
 }
 
-.content-card h1, .content-card h2, .content-card h3, .content-card h4, .content-card h5, .content-card h6 {
+.glass-card h1, .glass-card h2, .glass-card h3, .glass-card h4, .glass-card h5, .glass-card h6 {
     color: #333333;
 }
 

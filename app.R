@@ -108,7 +108,6 @@ ui <- navbarPage("COMPASS",
                                            tags$img(src = "https://images.pexels.com/photos/1438072/pexels-photo-1438072.jpeg", 
                                                     width = "600px", class = "home-img"),
                                            br(), br(),
-                                           
                                            div(class = "partners-section",
                                                p("PARTNER INSTITUTIONS", class = "partners-label"),
                                                div(class = "partners-logos",
@@ -136,7 +135,7 @@ ui <- navbarPage("COMPASS",
                  tabPanel("Assessment",
                           fluidRow(
                             column(10, offset = 1, 
-                                   div(class = "content-card",
+                                   div(class = "glass-card",
                                        fluidRow(
                                          column(12, align = "center",
                                                 br(),
@@ -183,7 +182,7 @@ ui <- navbarPage("COMPASS",
                  tabPanel("Your Profile",
                           fluidRow(
                             column(10, offset = 1,
-                                   div(class = "content-card",
+                                   div(class = "glass-card",
                                        fluidRow(
                                          column(5,
                                                 uiOutput("institution_label"),
@@ -215,7 +214,7 @@ ui <- navbarPage("COMPASS",
                                    fluidRow(
                                      # Left Sidebar Card
                                      column(3,
-                                            div(class = "content-card",
+                                            div(class = "glass-card",
                                                 h4("Filters"),
                                                 br(),
                                                 h5("Stressors:"),
@@ -235,7 +234,7 @@ ui <- navbarPage("COMPASS",
                                      ),
                                      # Main Results Card
                                      column(9,
-                                            div(class = "content-card",
+                                            div(class = "glass-card", 
                                                 fluidRow(
                                                   column(12,
                                                          div(class = "view-mode-container",
