@@ -131,89 +131,90 @@ ui <- navbarPage("COMPASS",
                           )
                  ),
                  
-                  # --- Tab 2: Assessment ---
-                    tabPanel("Assessment",
-                      fluidRow(
-                        column(10, offset = 1, 
-                          div(class = "glass-card",
-                            fluidRow(
-                              column(12, align = "center",
-                                br(),
-                                h3("Student Stressor Assessment"),
-                                p("Select your institution and then rate your stressors in the tabs below.", class = "assess-intro"),
-                                div(class = "institution-select-container",
-                                  selectInput("institution", NULL, 
-                                    choices = c("Queen's University", "Concordia University", "University of Calgary"), 
-                                    width = "100%")
-                                ),
-                                br(), br()
-                              )
-                            ),
-                            fluidRow(
-                              column(12,
-                                div(class = "alert alert-info", role = "alert",
-                                  HTML("<strong>Instructions:</strong> Browse through the five domain tabs below. Rate stressors by severity on a scale of 0-10. Leave unrated (0) if not applicable.")
-                                )
-                              )
-                            ),
-                            tabsetPanel(
-                              id = "tabs",
-                              tabPanel("Academic", uiOutput("academic_ui")),
-                              tabPanel("Learning Environment", uiOutput("learning_env_ui")),
-                              tabPanel("Campus Culture", uiOutput("campus_culture_ui")),
-                              tabPanel("Interpersonal", uiOutput("interpersonal_ui")),
-                              tabPanel("Personal", uiOutput("personal_ui"))
-                            ),
-                            br(), hr(),
-                            fluidRow(
-                              column(12, align = "center",
-                                p(em("Note: Submitting these responses does not record any data. All data is self-contained in this session and will be lost if you close the browser window."),
-                                  class = "privacy-note"),
-                                actionButton("submit", "GENERATE PROFILE", class = "btn-primary btn-lg btn-submit-custom"),
-                                br(), br()
-                              )
+                 # --- Tab 2: Assessment ---
+                 tabPanel("Assessment",
+                          fluidRow(
+                            column(10, offset = 1, 
+                                   div(class = "glass-card",
+                                       fluidRow(
+                                         column(12, align = "center",
+                                                br(),
+                                                h3("Student Stressor Assessment"),
+                                                p("Select your institution and then rate your stressors in the tabs below.", class = "assess-intro"),
+                                                div(class = "institution-select-container",
+                                                    selectInput("institution", NULL, 
+                                                                choices = c("Queen's University", "Concordia University", "University of Calgary"), 
+                                                                width = "100%")
+                                                ),
+                                                br(), br()
+                                         )
+                                       ),
+                                       fluidRow(
+                                         column(12,
+                                                div(class = "alert alert-info", role = "alert",
+                                                    HTML("<strong>Instructions:</strong> Browse through the five domain tabs below. Rate stressors by severity on a scale of 0-10. Leave unrated (0) if not applicable.")
+                                                )
+                                         )
+                                       ),
+                                       tabsetPanel(
+                                         id = "tabs",
+                                         tabPanel("Academic", uiOutput("academic_ui")),
+                                         tabPanel("Learning Environment", uiOutput("learning_env_ui")),
+                                         tabPanel("Campus Culture", uiOutput("campus_culture_ui")),
+                                         tabPanel("Interpersonal", uiOutput("interpersonal_ui")),
+                                         tabPanel("Personal", uiOutput("personal_ui"))
+                                       ),
+                                       br(), hr(),
+                                       fluidRow(
+                                         column(12, align = "center",
+                                                p(em("Note: Submitting these responses does not record any data. All data is self-contained in this session and will be lost if you close the browser window."),
+                                                  class = "privacy-note"),
+                                                actionButton("submit", "GENERATE PROFILE", class = "btn-primary btn-lg btn-submit-custom"),
+                                                br(), br()
+                                         )
+                                       )
+                                   )
                             )
                           )
-                        )
-                      )
-                    ),
-
-                    # --- Tab 3: Your Profile ---
-                    tabPanel("Your Profile",
-                      fluidRow(
-                        column(10, offset = 1,
-                          div(class = "glass-card",
-                            fluidRow(
-                              column(5,
-                                uiOutput("institution_label"),
-                                br(), br(),
-                                h4("Your Top 10 Stressors"),
-                                p("Based on your responses, here are the top stressors you rated highest:"),
-                                br(),
-                                uiOutput("top_stressors_table")
-                              ),
-                              column(7,
-                                h4("Your Stressors"),
-                                checkboxGroupInput("domain_filter", "Filter by Domain:",
-                                  choices = unique(pssi_items$domain),
-                                  selected = unique(pssi_items$domain),
-                                  inline = TRUE
-                                ),
-                                plotOutput("lollipop_plot", height = "600px")
-                              )
-                            ),
-                            br(), hr(),
-                            fluidRow(
-                              column(12, align = "center",
-                                actionButton("go_to_recommendations", "VIEW RECOMMENDATIONS", 
-                                  class = "btn-primary btn-lg btn-submit-custom")
-                              )
+                 ),
+                 
+                 # --- Tab 3: Your Profile ---
+                 tabPanel("Your Profile",
+                          fluidRow(
+                            column(10, offset = 1,
+                                   div(class = "glass-card",
+                                       fluidRow(
+                                         column(5,
+                                                uiOutput("institution_label"),
+                                                br(),
+                                                h4("Your Top 10 Stressors", class = "profile-section-heading"),
+                                                p("Based on your responses, here are the top stressors you rated highest:", 
+                                                  class = "profile-section-desc"),
+                                                uiOutput("top_stressors_table")
+                                         ),
+                                         column(7,
+                                                h4("Visual Breakdown", class = "profile-section-heading"),
+                                                p("Filter Domain:", class = "profile-filter-label"),
+                                                checkboxGroupInput("domain_filter", NULL,
+                                                                   choices = unique(pssi_items$domain),
+                                                                   selected = unique(pssi_items$domain),
+                                                                   inline = TRUE
+                                                ),
+                                                plotOutput("lollipop_plot", height = "550px")
+                                         )
+                                       ),
+                                       br(), hr(),
+                                       fluidRow(
+                                         column(12, align = "center",
+                                                actionButton("go_to_recommendations", "VIEW RECOMMENDATIONS", 
+                                                             class = "btn-primary btn-lg btn-submit-custom")
+                                         )
+                                       )
+                                   )
                             )
                           )
-                        )
-                      )
-                    ),
-
+                 ),
+                 
                  
                  # --- Tab 4: Recommendations ---
                  tabPanel("Recommendations",
@@ -245,14 +246,20 @@ ui <- navbarPage("COMPASS",
                                             div(class = "glass-card", 
                                                 fluidRow(
                                                   column(12,
-                                                         div(class = "view-mode-container",
-                                                             radioButtons("view_mode", "View Mode:",
-                                                                          choices = c("List View", "Map View"),
-                                                                          selected = "List View",
-                                                                          inline = TRUE)
+                                                         div(class = "toggle-container",
+                                                             uiOutput("results_title"),
+                                                             tags$label(class = "switch-label",
+                                                                        tags$input(type = "checkbox", id = "view_mode_toggle", class="toggle-input"),
+                                                                        span(class = "slider-track",
+                                                                             span(class = "slider-text-left", "List View"),
+                                                                             span(class = "slider-text-right", "Map View"),
+                                                                             span(class = "slider-thumb")
+                                                                        )
+                                                             )
                                                          )
                                                   )
                                                 ),
+                                                br(),
                                                 uiOutput("results_view")
                                             )
                                      )
@@ -271,15 +278,15 @@ server <- function(input, output, session) {
     
     runjs("$('a[data-value=\"Your Profile\"]').attr('title', '');")
     runjs("$('a[data-value=\"Recommendations\"]').attr('title', '');")
-})
+  })
   
   observeEvent(input$start_assessment, {
     updateNavbarPage(session, inputId = "main_navbar", selected = "Assessment")
   })
-
+  
   observeEvent(input$go_to_recommendations, {
-  updateNavbarPage(session, inputId = "main_navbar", selected = "Recommendations")
-})
+    updateNavbarPage(session, inputId = "main_navbar", selected = "Recommendations")
+  })
   
   # --- Assessment UI ---
   render_domain_ui <- function(domain_name) {
@@ -327,10 +334,7 @@ server <- function(input, output, session) {
   
   # --- Your Profile Logic ---
   output$institution_label <- renderUI({
-    tags$div(
-      class = "institution-pill",
-      toupper(input$institution)
-    )
+    h3(toupper(input$institution), class = "institution-label")
   })
   
   output$top_stressors_table <- renderUI({
@@ -343,12 +347,12 @@ server <- function(input, output, session) {
       dom_color <- domain_colors[row$domain]
       tags$tr(
         tags$td(row$rank, class = "td-rank"),
-        tags$td(row$label, class = "td-item"),
-        tags$td(row$domain, class = "td-domain", style = paste0("color:", dom_color))
+        tags$td(row$label, class = "td-item", style = paste0("color:", dom_color, "; font-weight: 600;")),
+        tags$td(row$severity, class = "td-sev")
       )
     })
     tags$table(class = "stressor-table",
-               tags$thead(tags$tr(tags$th("Rank"), tags$th("Stressor"), tags$th("Domain"))),
+               tags$thead(tags$tr(tags$th("Rank"), tags$th("Stressor"), tags$th("Severity"))),
                tags$tbody(rows))
   })
   
@@ -357,13 +361,25 @@ server <- function(input, output, session) {
     data <- responses() %>% filter(domain %in% input$domain_filter)
     if(nrow(data) == 0) return(NULL)
     
-    ggplot(data, aes(x = severity, y = reorder(item, severity), color = domain)) +
+    ggplot(data, aes(x = severity, y = reorder(label, severity), color = domain)) +
       geom_segment(aes(x = 0, xend = severity, y = label, yend = label), color = "gray80", size = 2) +
       geom_point(aes(x = severity, y = label, color = domain), size = 5) +
       scale_color_manual(values = domain_colors) +
       scale_x_continuous(limits = c(0, 10), breaks = seq(0, 10, 2), name = "Severity") +
-      labs(y = NULL) + theme_minimal(base_size = 15) + theme(axis.text.y = element_text(size = 13))
-  })
+      labs(y = NULL) + 
+      theme_minimal(base_size = 14) + 
+      theme(
+        axis.text.y = element_text(size = 11, color = "#333"),
+        axis.text.x = element_text(size = 11, color = "#666"),
+        axis.title.x = element_text(size = 12, color = "#333", margin = margin(t = 10)),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        panel.background = element_rect(fill = "transparent", color = NA),
+        panel.grid.major.y = element_line(color = "#f0f0f0"),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major.x = element_line(color = "#e8e8e8"),
+        legend.position = "none"
+      )
+  }, bg = "transparent")
   
   # --- Recommendations Logic ---
   output$stressor_filter_ui <- renderUI({
@@ -372,15 +388,21 @@ server <- function(input, output, session) {
                        selected = "My Top 10 Stressors")
   })
   
+  output$results_title <- renderUI({
+    if (is.null(input$view_mode_toggle) || input$view_mode_toggle == FALSE) {
+      h4("List of Resources", style = "margin: 0;")
+    } else {
+      h4("Map of Campus Services", style = "margin: 0;")
+    }
+  })
+  
   output$results_view <- renderUI({
-    if (input$view_mode == "List View") {
+    if (is.null(input$view_mode_toggle) || input$view_mode_toggle == FALSE) {
       tagList(
-        h3("List of Resources"),
         p("Resources matching your top stressors and selected groups will appear here.", class = "list-placeholder")
       )
     } else {
       tagList(
-        h3("Map of Campus Services"),
         leafletOutput("campus_map", height = "500px")
       )
     }
