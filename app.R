@@ -1,6 +1,6 @@
 options(repos = c(CRAN = "https://cloud.r-project.org"))
 #-----
-#PSSI Triage Tool app - January 2025
+#COMPASS Tool - January 2025
 #----
 library(jose)
 library(rsconnect)
@@ -48,32 +48,32 @@ pssi_items <- tibble::tribble(
 )
 
 graph_labels <- c(
-  "Preparing for and writing exams" = "Exams",
-  "Having multiple assessments due around the same time" = "Multi Deadlines",
-  "Heavily weighted assessments" = "Heavy Weights",
-  "Managing my academic workload" = "Workload",
-  "Maintaining my GPA" = "GPA",
-  "Working on my thesis" = "Thesis",
-  "Performing well at my professional placement (i.e., practicum, clerkship, etc.)" = "Placement",
-  "Poor communication from my professor(s) or supervisor" = "Poor Comm",
-  "Meeting with my professor(s) or supervisor" = "Meeting Profs",
-  "Meeting my professor(s) or supervisor's expectations" = "Prof Expectations",
-  "Adjusting to the post-secondary setting" = "Adjusting",
-  "Academic competition among my peers" = "Competition",
-  "Feeling like I'm not working hard enough or am not smart enough" = "Imposter Syndrome",
-  "Pressure to succeed" = "Pressure",
-  "Experiencing discrimination and/or harassment on campus" = "Discrimination",
-  "Managing friendships" = "Friendships",
+  "Preparing for and writing exams" = "Preparing for Exams",
+  "Having multiple assessments due around the same time" = "Multiple Assessments Due",
+  "Heavily weighted assessments" = "Heavily Weighted Assessments",
+  "Managing my academic workload" = "Managing Academic Workload",
+  "Maintaining my GPA" = "Maintaining GPA",
+  "Working on my thesis" = "Working on Thesis",
+  "Performing well at my professional placement (i.e., practicum, clerkship, etc.)" = "Performance at Placement",
+  "Poor communication from my professor(s) or supervisor" = "Poor Communication",
+  "Meeting with my professor(s) or supervisor" = "Meeting with Professors",
+  "Meeting my professor(s) or supervisor's expectations" = "Meeting Professor Expectations",
+  "Adjusting to the post-secondary setting" = "Adjusting to University",
+  "Academic competition among my peers" = "Academic Competition",
+  "Feeling like I'm not working hard enough or am not smart enough" = "Feeling Not Smart Enough",
+  "Pressure to succeed" = "Pressure to Succeed",
+  "Experiencing discrimination and/or harassment on campus" = "Discrimination or Harassment",
+  "Managing friendships" = "Managing Friendships",
   "Networking with the \"right\" people" = "Networking",
-  "Feeling pressured to socialize or engage in a social life" = "Social Pressure",
-  "Balancing my academics with everything else (socializing, extracurriculars, etc.)" = "Balance (Social)",
-  "Comparing myself to others" = "Comparison",
-  "Meeting expectations (my own expectations for myself, or others’ expectations of me)" = "Expectations",
-  "Taking care of my health (getting enough sleep, exercise, eating well)" = "Health/Self-care",
-  "Balancing my paid work with my academics" = "Balance (Work)",
-  "Finding time for my hobbies/interests" = "Hobbies",
-  "Having to take student loans and worrying about debt" = "Finances/Debt",
-  "Worrying about “what happens next” (getting a job after graduation, getting into a new program)" = "Future/Career"
+  "Feeling pressured to socialize or engage in a social life" = "Pressure to Socialize",
+  "Balancing my academics with everything else (socializing, extracurriculars, etc.)" = "Balancing Academics & Social",
+  "Comparing myself to others" = "Comparing Self to Others",
+  "Meeting expectations (my own expectations for myself, or others’ expectations of me)" = "Meeting Expectations",
+  "Taking care of my health (getting enough sleep, exercise, eating well)" = "Health and Self-Care",
+  "Balancing my paid work with my academics" = "Balancing Work & Academics",
+  "Finding time for my hobbies/interests" = "Finding Time for Hobbies",
+  "Having to take student loans and worrying about debt" = "Loans and Debt",
+  "Worrying about “what happens next” (getting a job after graduation, getting into a new program)" = "Future Career Anxiety"
 )
 
 domain_colors <- c(
@@ -196,7 +196,10 @@ ui <- navbarPage("COMPASS",
                                                 h4("Visual Breakdown", class = "profile-section-heading"),
                                                 p("Filter Domain:", class = "profile-filter-label"),
                                                 checkboxGroupInput("domain_filter", NULL,
-                                                                   choices = unique(pssi_items$domain),
+                                                                   choiceNames = lapply(unique(pssi_items$domain), function(d) {
+                                                                     span(d, style = paste0("color:", domain_colors[d], "; font-weight: bold;"))
+                                                                   }),
+                                                                   choiceValues = unique(pssi_items$domain),
                                                                    selected = unique(pssi_items$domain),
                                                                    inline = TRUE
                                                 ),
@@ -362,21 +365,21 @@ server <- function(input, output, session) {
     if(nrow(data) == 0) return(NULL)
     
     ggplot(data, aes(x = severity, y = reorder(label, severity), color = domain)) +
-      geom_segment(aes(x = 0, xend = severity, y = label, yend = label), color = "gray80", size = 2) +
+      geom_segment(aes(x = 0, xend = severity, y = label, yend = label), color = "#888888", size = 1) +
       geom_point(aes(x = severity, y = label, color = domain), size = 5) +
       scale_color_manual(values = domain_colors) +
       scale_x_continuous(limits = c(0, 10), breaks = seq(0, 10, 2), name = "Severity") +
       labs(y = NULL) + 
       theme_minimal(base_size = 14) + 
       theme(
-        axis.text.y = element_text(size = 11, color = "#333"),
-        axis.text.x = element_text(size = 11, color = "#666"),
-        axis.title.x = element_text(size = 12, color = "#333", margin = margin(t = 10)),
+        axis.text.y = element_text(size = 11, color = "#333333"),
+        axis.text.x = element_text(size = 11, color = "#333333"),
+        axis.title.x = element_text(size = 12, color = "#333333", margin = margin(t = 10)),
         plot.background = element_rect(fill = "transparent", color = NA),
         panel.background = element_rect(fill = "transparent", color = NA),
-        panel.grid.major.y = element_line(color = "#f0f0f0"),
+        panel.grid.major.y = element_line(color = "#e0e0e0"),
         panel.grid.minor.y = element_blank(),
-        panel.grid.major.x = element_line(color = "#e8e8e8"),
+        panel.grid.major.x = element_line(color = "#e0e0e0"),
         legend.position = "none"
       )
   }, bg = "transparent")
